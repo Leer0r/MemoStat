@@ -1,0 +1,161 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{caption}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{charter}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+
+
+\geometry{hmargin=2.5cm,vmargin=1.2cm}
+\renewcommand*\contentsname{\centering Sommaire}
+\newcommand{\argument}[1]{\textcolor{red}{#1}}
+\newcommand{\warning}[1]{\textcolor{red}{#1}}
+\newcommand{\hsp}{\hspace{20pt}}
+\title{MemoStat}
+\author{Lilian Russo}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Rappel}
+\subsection{Pour une variable avec une probabilité connue}
+Si on donne dans l'énoncer la probabilité pour que \argument{x} se réalise, on peut alors dire que $x \sim \mathcal{B}(P(X))$
+
+\subsection{Somme de loi de Bernoullis \underline{indépendantes}}
+Si on prend un échantillon de taille n de valeurs indépendantes suivants toutes la même loi de Bernoullis, alors on peut affirmer que $X = \sum x_i \sim \mathcal{B}(n,P(x))$
+
+\subsection{Centrer réduite une loi normale}
+Soit $X \sim \mathcal{N}(\mu,\sigma)$, alors : 
+\begin{equation*}
+    Z = \frac{X - \mu}{\sqrt{\sigma}} \sim \mathcal{N}(0,1)
+\end{equation*}
+Par exemple, si on cherche la valeur de $Pa \leqslant X \leqslant b)$ avec $X \sim \mathcal{N}(\mu,\sigma)$, alors 
+\begin{equation*}
+    P \left ( \frac{a - \mu}{\sigma} \leqslant Z \leqslant \frac{b-\mu}{\sigma} \right )
+\end{equation*}
+suivra la loi normale centrer réduite
+
+\subsection{Soustraction de deux variables suivants des lois normales différentes}
+\begin{center}
+    Soit $X \sim \mathcal{N}(\mu,\sigma)$, $Y \sim \mathcal{N}(\mu',\sigma')$, alors $X-Y \sim \mathcal{N}(\mu - \mu',\sigma + \sigma')$
+\end{center}
+
+\subsection{Les intervalles de fluctuations}
+Un intervalle de fluctuation se défini par : \begin{equation*}
+    IF(\mu,p) = \left ] \mu \pm u_{(1-\alpha/2)} \frac{\sigma}{\sqrt{n}} \right [
+\end{equation*}
+\begin{center}
+\label{eq:Calcul_alpha}
+    avec $1-\alpha = p \iff \alpha = 1-p \iff \frac{\alpha}{2} = \frac{1-p}{2} \iff 1 - \frac{\alpha}{2} = 1 - \frac{1-p}{2} \iff u_{1 - \frac{1-p}{2}} = 1 - \frac{\alpha}{2}$\newline
+    On va donc chercher $P(X\leqslant u) = 1 - \frac{\alpha}{2}$
+\end{center}
+
+\subsection{Intervalle de confiance}
+Un intervalle de confiance se définit par : 
+\begin{equation*}
+    IC(\mu,p) = \left ] f \pm u_{(1-\alpha/2)} \sqrt{\frac{f(1-f)}{n}} \right [
+\end{equation*}
+f est une fréquence calculée sur un échantillon de la population totale. On note généralement $\hat{p} = f$ l'estimateur associé.
+On peut trouver $u_{1-\alpha}/2$ avec la même méthode de l'intervalle de fluctuation
+\subsection{Différence entre intervalle de fluctuation et intervalle de confiance}
+Un intervalle de confiance est utiliser si on ne connais pas les probabilités. Il faudra donc utiliser des estimateurs. Si on connais la valeurs des probabilités, on utilise alors un intervalle de fluctuation.
+
+\newpage
+\section{Demo}
+\subsection{Demo Bienatmé Tchebychev}
+\paragraph{On veut résoudre un problème sous la forme : }
+
+\begin{equation*}
+    P(|X-E(X)|\geqslant a) \leqslant \frac{V(X)}{a^2}
+\end{equation*}
+
+sachant qu'on nous demande de faire une minoration de la probabilité que $X$ tel que : $P(\argument{x} \leqslant X \leqslant \argument{y}) \geqslant \argument{z}$
+
+On va donc procéder comme suit : 
+\begin{enumerate}
+    \item On enlève la valeur absolue : 
+    \begin{equation*}
+        P(-a \leqslant X-E(X)\leqslant a) \leqslant \frac{V(X)}{a^2}
+    \end{equation*}
+    \item On veut une minoration, il faut donc inverser le signe : 
+    \begin{equation*}
+        P(-a \leqslant X-E(X)\leqslant a) \geqslant 1 - \frac{V(X)}{a^2}
+    \end{equation*}
+    \item Pour finir, on va isoler $X$ en faisant passer $E(X)$ de part et d'autre de la double inégalité : 
+    \begin{equation*}
+        P(E(X)-a \leqslant X\leqslant a+E(X)) \geqslant 1 - \frac{V(X)}{a^2}
+    \end{equation*}
+\end{enumerate}
+Et pour rappel, on veut $P(\argument{x} \leqslant X \leqslant \argument{y}) \geqslant \argument{z}$, on obtient donc le système suivant : \newline
+\begin{center}
+    $\left \{
+       \begin{array}{r c l}
+          \argument{x}  & = & E(X)-a \\
+          \argument{y}   & = & E(X)+a \\
+          \argument{z} & = & 1 - \frac{V(X)}{a^2}
+       \end{array}
+       \right .$
+\end{center}
+
+On connais généralement la moyenne et l'écart-type, ce qui nous permet de trouver a, donc de déterminer \argument{x},\argument{y},\argument{z}. La probabilité finale sera donc la valeur de z
+
+
+\subsection{Demo loi exponentielle}
+Quand une variable X suit une loi exponentielle de paramètre $\lambda \geqslant 0$, donc du type : 
+\begin{equation*}
+    P(X \leqslant t) = \int_0^t \lambda e^{-\lambda x} dx
+\end{equation*}
+On peut la simplifier comme suit : 
+\begin{enumerate}
+    \item On met l'intégrale sous l'autre forme pour une raison de compréhension : 
+    \begin{equation*}
+        \int_0^t \lambda e^{-\lambda x} dx = \lambda \left [ \frac{e^{-\lambda x}}{-\lambda} \right ]_0^t
+    \end{equation*}
+    \item Or, on peut simplifier cette expression : 
+    \begin{equation*}
+        \lambda \left [ \frac{e^{-\lambda x}}{-\lambda} \right ]_0^t \longrightarrow \cancel{\lambda} \left [ \frac{e^{-\lambda x}}{\cancel{-\lambda}} \right ]_0^t \longrightarrow e^{-\lambda t} + 1
+    \end{equation*}
+    
+\end{enumerate}
+
+On obtient au final que \textcolor{red}{$P(X \leqslant t) = e^{-\lambda t} + 1$}
+\newpage
+
+\section{Les grandes lois}
+\subsection{La loi de Poisson}
+\subsubsection{Utilisation}
+Cette loi est applicable sur des évènements se produisant sur un intervalle de temps donné. Elle opère sur les probabilité discrète.
+
+\subsubsection{Calcul et utilisation}
+Si $X$ est un événement sur un laps de temps donné, on peut dire que $X \sim \mathcal{P}(\lambda)$
+Pour connaître $\lambda$, il nous faut l'espérance ainsi que l'intervalle de temps de la variable. Si on prend un évènement se répétant en moyenne 10 fois par minutes et qu'on prend un intervalle de temps de 30 min, alors on obtient $\lambda = 10 \times 30 = 300$\newline
+La loi peut ensuite utiliser sur la calculette pour trouver les valeurs cherchée.
+
+\subsubsection{Approximation par la loi normale}
+Grâce au Théorème Central Limite, on peut approximer la loi de Poisson par une loi normale \underline{à condition que $\lambda \geqslant 25$ }\newline Si c'est le cas, alors 
+\begin{equation*}
+    \mathcal{P}(\lambda) \sim \mathcal{N}(\lambda,\lambda)
+\end{equation*}
+On peut donc approximer une loi de Poisson avec une loi normale d'espérance $\lambda$ et d'écart-type $\lambda$
+
+\end{document}
